@@ -1,0 +1,1319 @@
+<!DOCTYPE html>
+<html>
+<head>
+    
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.js"></script>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.3/dist/leaflet.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css"/>
+    <link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.2.0/css/all.min.css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Leaflet.awesome-markers/2.0.2/leaflet.awesome-markers.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/python-visualization/folium/folium/templates/leaflet.awesome.rotate.min.css"/>
+    
+            <meta name="viewport" content="width=device-width,
+                initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+            <style>
+                #map_0d775dd755e9bec93b7f2903098e315d {
+                    position: relative;
+                    width: 100.0%;
+                    height: 100.0%;
+                    left: 0.0%;
+                    top: 0.0%;
+                }
+                .leaflet-container { font-size: 1rem; }
+            </style>
+
+            <style>html, body {
+                width: 100%;
+                height: 100%;
+                margin: 0;
+                padding: 0;
+            }
+            </style>
+
+            <style>#map {
+                position:absolute;
+                top:0;
+                bottom:0;
+                right:0;
+                left:0;
+                }
+            </style>
+
+            <script>
+                L_NO_TOUCH = false;
+                L_DISABLE_3D = false;
+            </script>
+
+        
+</head>
+<body>
+    
+    
+    <div style="
+        position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
+        z-index: 9999;
+        background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+        padding: 18px 35px; border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        color: white; font-family: 'Segoe UI', system-ui, sans-serif;
+        text-align: center; border: 1px solid rgba(255,255,255,0.1);
+    ">
+        <div style="font-size: 20px; font-weight: 700; letter-spacing: 0.5px;">
+            🚛 Kurye Rota Optimizasyonu — Türkiye
+        </div>
+        <div style="font-size: 13px; margin-top: 8px; opacity: 0.85; display: flex; gap: 15px; justify-content: center;">
+            <span>📍 10 nokta</span>
+            <span>📏 2605 km</span>
+            <span>⛽ ~313 lt</span>
+            <span>💰 ~13,597 ₺</span>
+        </div>
+        <div style="font-size: 11px; margin-top: 4px; opacity: 0.6;">
+            Gezgin Satıcı Problemi (TSP) — Google OR-Tools ile çözüldü
+        </div>
+    </div>
+    
+    
+    <div style="
+        position: fixed; bottom: 20px; left: 20px; z-index: 9999;
+        background: rgba(15, 12, 41, 0.94); padding: 16px 20px;
+        border-radius: 14px; color: white; font-size: 12px;
+        font-family: 'Segoe UI', system-ui, sans-serif;
+        box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+        max-height: 380px; overflow-y: auto;
+        border: 1px solid rgba(255,255,255,0.08);
+        backdrop-filter: blur(10px);
+    ">
+        <div style="font-size: 14px; font-weight: 700; margin-bottom: 10px; color: #FFD700;">
+            📋 Optimum Rota Sırası
+        </div>
+        
+        <div style="margin: 4px 0; display: flex; align-items: center; gap: 6px;">
+            <span style="
+                background: #FFD700; color: #000; font-weight: 700;
+                width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 10px; flex-shrink: 0;
+            ">1</span>
+            <span>🏭 İstanbul<span style='color:#aaa; font-size:10px;'> → 102 km</span></span>
+        </div>
+        
+        <div style="margin: 4px 0; display: flex; align-items: center; gap: 6px;">
+            <span style="
+                background: #00E5FF; color: #000; font-weight: 700;
+                width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 10px; flex-shrink: 0;
+            ">2</span>
+            <span>📦 Bursa<span style='color:#aaa; font-size:10px;'> → 334 km</span></span>
+        </div>
+        
+        <div style="margin: 4px 0; display: flex; align-items: center; gap: 6px;">
+            <span style="
+                background: #00E5FF; color: #000; font-weight: 700;
+                width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 10px; flex-shrink: 0;
+            ">3</span>
+            <span>📦 İzmir<span style='color:#aaa; font-size:10px;'> → 250 km</span></span>
+        </div>
+        
+        <div style="margin: 4px 0; display: flex; align-items: center; gap: 6px;">
+            <span style="
+                background: #00E5FF; color: #000; font-weight: 700;
+                width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 10px; flex-shrink: 0;
+            ">4</span>
+            <span>📦 Denizli<span style='color:#aaa; font-size:10px;'> → 234 km</span></span>
+        </div>
+        
+        <div style="margin: 4px 0; display: flex; align-items: center; gap: 6px;">
+            <span style="
+                background: #00E5FF; color: #000; font-weight: 700;
+                width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 10px; flex-shrink: 0;
+            ">5</span>
+            <span>📦 Antalya<span style='color:#aaa; font-size:10px;'> → 261 km</span></span>
+        </div>
+        
+        <div style="margin: 4px 0; display: flex; align-items: center; gap: 6px;">
+            <span style="
+                background: #00E5FF; color: #000; font-weight: 700;
+                width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 10px; flex-shrink: 0;
+            ">6</span>
+            <span>📦 Konya<span style='color:#aaa; font-size:10px;'> → 374 km</span></span>
+        </div>
+        
+        <div style="margin: 4px 0; display: flex; align-items: center; gap: 6px;">
+            <span style="
+                background: #00E5FF; color: #000; font-weight: 700;
+                width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 10px; flex-shrink: 0;
+            ">7</span>
+            <span>📦 Kayseri<span style='color:#aaa; font-size:10px;'> → 381 km</span></span>
+        </div>
+        
+        <div style="margin: 4px 0; display: flex; align-items: center; gap: 6px;">
+            <span style="
+                background: #00E5FF; color: #000; font-weight: 700;
+                width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 10px; flex-shrink: 0;
+            ">8</span>
+            <span>📦 Ankara<span style='color:#aaa; font-size:10px;'> → 303 km</span></span>
+        </div>
+        
+        <div style="margin: 4px 0; display: flex; align-items: center; gap: 6px;">
+            <span style="
+                background: #00E5FF; color: #000; font-weight: 700;
+                width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 10px; flex-shrink: 0;
+            ">9</span>
+            <span>📦 Afyonkarahisar<span style='color:#aaa; font-size:10px;'> → 153 km</span></span>
+        </div>
+        
+        <div style="margin: 4px 0; display: flex; align-items: center; gap: 6px;">
+            <span style="
+                background: #00E5FF; color: #000; font-weight: 700;
+                width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 10px; flex-shrink: 0;
+            ">10</span>
+            <span>📦 Eskişehir<span style='color:#aaa; font-size:10px;'> → 211 km</span></span>
+        </div>
+        
+        <div style="margin: 4px 0; display: flex; align-items: center; gap: 6px;">
+            <span style="
+                background: #FFD700; color: #000; font-weight: 700;
+                width: 20px; height: 20px; border-radius: 50%;
+                display: inline-flex; align-items: center; justify-content: center;
+                font-size: 10px; flex-shrink: 0;
+            ">11</span>
+            <span>🏭 İstanbul</span>
+        </div>
+        
+    </div>
+    
+    
+            <div class="folium-map" id="map_0d775dd755e9bec93b7f2903098e315d" ></div>
+        
+</body>
+<script>
+    
+    
+            var map_0d775dd755e9bec93b7f2903098e315d = L.map(
+                "map_0d775dd755e9bec93b7f2903098e315d",
+                {
+                    center: [38.92217, 30.674919999999997],
+                    crs: L.CRS.EPSG3857,
+                    ...{
+  "zoom": 6,
+  "zoomControl": true,
+  "preferCanvas": false,
+}
+
+                }
+            );
+
+            
+
+        
+    
+            var tile_layer_3d9bfdf70413dae176b09d39c4085032 = L.tileLayer(
+                "https://tile.openstreetmap.org/{z}/{x}/{y}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 19,
+  "maxNativeZoom": 19,
+  "noWrap": false,
+  "attribution": "\u0026copy; \u003ca href=\"https://www.openstreetmap.org/copyright\"\u003eOpenStreetMap\u003c/a\u003e contributors",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_3d9bfdf70413dae176b09d39c4085032.addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var tile_layer_4c89e642f8f878d3ec5a01072bd2f747 = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "Esri",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_4c89e642f8f878d3ec5a01072bd2f747.addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var tile_layer_2a523408cd2e0e41b01405a4f567036b = L.tileLayer(
+                "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
+                {
+  "minZoom": 0,
+  "maxZoom": 18,
+  "maxNativeZoom": 18,
+  "noWrap": false,
+  "attribution": "CartoDB",
+  "subdomains": "abc",
+  "detectRetina": false,
+  "tms": false,
+  "opacity": 1,
+}
+
+            );
+        
+    
+            tile_layer_2a523408cd2e0e41b01405a4f567036b.addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var layer_control_39305775da758ace2caff5a0930a8c3f_layers = {
+                base_layers : {
+                    "Sokak Haritas\u0131" : tile_layer_3d9bfdf70413dae176b09d39c4085032,
+                    "Uydu G\u00f6r\u00fcnt\u00fcs\u00fc" : tile_layer_4c89e642f8f878d3ec5a01072bd2f747,
+                    "Koyu Tema" : tile_layer_2a523408cd2e0e41b01405a4f567036b,
+                },
+                overlays :  {
+                },
+            };
+            let layer_control_39305775da758ace2caff5a0930a8c3f = L.control.layers(
+                layer_control_39305775da758ace2caff5a0930a8c3f_layers.base_layers,
+                layer_control_39305775da758ace2caff5a0930a8c3f_layers.overlays,
+                {
+  "position": "topright",
+  "collapsed": true,
+  "autoZIndex": true,
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+
+        
+    
+            var marker_9713419cdc2fba5454995d9ff8307482 = L.marker(
+                [40.819, 29.3005],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var icon_c2427ad8cd2ac65c665a30b9831b4f77 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "red",
+  "iconColor": "white",
+  "icon": "industry",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_42007329986c55a2ddc0ec1655cd9c19 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_fe7f8e5edd1fd7c95d74bc5d596d3d5b = $(`<div id="html_fe7f8e5edd1fd7c95d74bc5d596d3d5b" style="width: 100.0%; height: 100.0%;">         <div style="font-family: 'Segoe UI', system-ui; min-width: 220px; padding: 5px;">             <div style="font-weight: 700; font-size: 15px; color: #1a1a2e;">                 🏭 Merkez Depo             </div>             <hr style="margin: 6px 0; border-color: #e0e0e0;">             <div style="font-size: 12px; color: #555; line-height: 1.6;">                 🏙️ <b>Şehir:</b> İstanbul<br>                 🏠 <b>Adres:</b> Tuzla Organize Sanayi Bölgesi, Lojistik Merkezi<br>                 📍 <b>Koordinat:</b> 40.8190°N, 29.3005°E<br>                 🔢 <b>Rota sırası:</b> <span style="color:#e74c3c; font-weight:700;">1</span><br>                 🏷️ <b>Tip:</b> Merkez Depo             </div>         </div>         </div>`)[0];
+                popup_42007329986c55a2ddc0ec1655cd9c19.setContent(html_fe7f8e5edd1fd7c95d74bc5d596d3d5b);
+            
+        
+
+        marker_9713419cdc2fba5454995d9ff8307482.bindPopup(popup_42007329986c55a2ddc0ec1655cd9c19)
+        ;
+
+        
+    
+    
+            marker_9713419cdc2fba5454995d9ff8307482.bindTooltip(
+                `<div>
+                     1. İstanbul — Merkez Depo
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_9713419cdc2fba5454995d9ff8307482.setIcon(icon_c2427ad8cd2ac65c665a30b9831b4f77);
+            
+    
+            var marker_3144af71d33e435885a8c38ae9fd2583 = L.marker(
+                [40.819, 29.3005],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_7339fc8e3aa874c03c83f3e8478edab5 = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: #FF4444; color: white; font-weight: 800;\n                    width: 26px; height: 26px; border-radius: 50%;\n                    display: flex; align-items: center; justify-content: center;\n                    font-size: 12px; border: 2px solid white;\n                    box-shadow: 0 3px 10px rgba(0,0,0,0.4);\n                    transform: translate(-13px, -35px);\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                \"\u003e1\u003c/div\u003e\n                ",
+  "iconSize": [26, 26],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_3144af71d33e435885a8c38ae9fd2583.setIcon(div_icon_7339fc8e3aa874c03c83f3e8478edab5);
+            
+    
+            var marker_63acbf0b2ab789c06497e05598153a3a = L.marker(
+                [39.9708, 32.6227],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var icon_65648506b2306c621dc9d01ff701164c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cube",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_40f470f2c1060b9d44ee9769205ab85b = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_b2d3e1bce98ef091239a99a4c372421e = $(`<div id="html_b2d3e1bce98ef091239a99a4c372421e" style="width: 100.0%; height: 100.0%;">         <div style="font-family: 'Segoe UI', system-ui; min-width: 220px; padding: 5px;">             <div style="font-weight: 700; font-size: 15px; color: #1a1a2e;">                 📦 Ankara Dağıtım Merkezi             </div>             <hr style="margin: 6px 0; border-color: #e0e0e0;">             <div style="font-size: 12px; color: #555; line-height: 1.6;">                 🏙️ <b>Şehir:</b> Ankara<br>                 🏠 <b>Adres:</b> Ostim OSB, 100. Yıl Bulvarı No:52<br>                 📍 <b>Koordinat:</b> 39.9708°N, 32.6227°E<br>                 🔢 <b>Rota sırası:</b> <span style="color:#e74c3c; font-weight:700;">8</span><br>                 🏷️ <b>Tip:</b> Dağıtım Noktası             </div>         </div>         </div>`)[0];
+                popup_40f470f2c1060b9d44ee9769205ab85b.setContent(html_b2d3e1bce98ef091239a99a4c372421e);
+            
+        
+
+        marker_63acbf0b2ab789c06497e05598153a3a.bindPopup(popup_40f470f2c1060b9d44ee9769205ab85b)
+        ;
+
+        
+    
+    
+            marker_63acbf0b2ab789c06497e05598153a3a.bindTooltip(
+                `<div>
+                     8. Ankara — Ankara Dağıtım Merkezi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_63acbf0b2ab789c06497e05598153a3a.setIcon(icon_65648506b2306c621dc9d01ff701164c);
+            
+    
+            var marker_238ffae5f75737c6a1cf39838dd81385 = L.marker(
+                [39.9708, 32.6227],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_0b9b7f1cc00ac1a0bdcc4cd9ab8100d7 = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: #00B4D8; color: white; font-weight: 800;\n                    width: 26px; height: 26px; border-radius: 50%;\n                    display: flex; align-items: center; justify-content: center;\n                    font-size: 12px; border: 2px solid white;\n                    box-shadow: 0 3px 10px rgba(0,0,0,0.4);\n                    transform: translate(-13px, -35px);\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                \"\u003e8\u003c/div\u003e\n                ",
+  "iconSize": [26, 26],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_238ffae5f75737c6a1cf39838dd81385.setIcon(div_icon_0b9b7f1cc00ac1a0bdcc4cd9ab8100d7);
+            
+    
+            var marker_be11318beb3fae8d977ee4bd2ec14c40 = L.marker(
+                [38.4362, 27.1428],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var icon_3d996432d591fbf334ed1a1bcd5aa2ff = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cube",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_b3342b810464db5cf623de541feb5d13 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_4f70e06f7623f68807de351b5ec81c65 = $(`<div id="html_4f70e06f7623f68807de351b5ec81c65" style="width: 100.0%; height: 100.0%;">         <div style="font-family: 'Segoe UI', system-ui; min-width: 220px; padding: 5px;">             <div style="font-weight: 700; font-size: 15px; color: #1a1a2e;">                 📦 İzmir Şubesi             </div>             <hr style="margin: 6px 0; border-color: #e0e0e0;">             <div style="font-size: 12px; color: #555; line-height: 1.6;">                 🏙️ <b>Şehir:</b> İzmir<br>                 🏠 <b>Adres:</b> Alsancak, Kıbrıs Şehitleri Cad. No:118<br>                 📍 <b>Koordinat:</b> 38.4362°N, 27.1428°E<br>                 🔢 <b>Rota sırası:</b> <span style="color:#e74c3c; font-weight:700;">3</span><br>                 🏷️ <b>Tip:</b> Dağıtım Noktası             </div>         </div>         </div>`)[0];
+                popup_b3342b810464db5cf623de541feb5d13.setContent(html_4f70e06f7623f68807de351b5ec81c65);
+            
+        
+
+        marker_be11318beb3fae8d977ee4bd2ec14c40.bindPopup(popup_b3342b810464db5cf623de541feb5d13)
+        ;
+
+        
+    
+    
+            marker_be11318beb3fae8d977ee4bd2ec14c40.bindTooltip(
+                `<div>
+                     3. İzmir — İzmir Şubesi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_be11318beb3fae8d977ee4bd2ec14c40.setIcon(icon_3d996432d591fbf334ed1a1bcd5aa2ff);
+            
+    
+            var marker_1b7927bf76cde01f26366f86b7a9a498 = L.marker(
+                [38.4362, 27.1428],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_9eef5900b3a407fa3bb68d0368281306 = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: #00B4D8; color: white; font-weight: 800;\n                    width: 26px; height: 26px; border-radius: 50%;\n                    display: flex; align-items: center; justify-content: center;\n                    font-size: 12px; border: 2px solid white;\n                    box-shadow: 0 3px 10px rgba(0,0,0,0.4);\n                    transform: translate(-13px, -35px);\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                \"\u003e3\u003c/div\u003e\n                ",
+  "iconSize": [26, 26],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_1b7927bf76cde01f26366f86b7a9a498.setIcon(div_icon_9eef5900b3a407fa3bb68d0368281306);
+            
+    
+            var marker_1a872cb652e3ae4a34b72107e80d8e4b = L.marker(
+                [40.2225, 28.864],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var icon_24f0d2372fa919051fcf42133df6284a = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cube",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_4a96061da39924c34f3700b80292ba82 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_7b18795e17ab7c3f1a88d653bea66a8d = $(`<div id="html_7b18795e17ab7c3f1a88d653bea66a8d" style="width: 100.0%; height: 100.0%;">         <div style="font-family: 'Segoe UI', system-ui; min-width: 220px; padding: 5px;">             <div style="font-weight: 700; font-size: 15px; color: #1a1a2e;">                 📦 Bursa Teslim Noktası             </div>             <hr style="margin: 6px 0; border-color: #e0e0e0;">             <div style="font-size: 12px; color: #555; line-height: 1.6;">                 🏙️ <b>Şehir:</b> Bursa<br>                 🏠 <b>Adres:</b> Nilüfer, DOSAB Organize Sanayi<br>                 📍 <b>Koordinat:</b> 40.2225°N, 28.8640°E<br>                 🔢 <b>Rota sırası:</b> <span style="color:#e74c3c; font-weight:700;">2</span><br>                 🏷️ <b>Tip:</b> Dağıtım Noktası             </div>         </div>         </div>`)[0];
+                popup_4a96061da39924c34f3700b80292ba82.setContent(html_7b18795e17ab7c3f1a88d653bea66a8d);
+            
+        
+
+        marker_1a872cb652e3ae4a34b72107e80d8e4b.bindPopup(popup_4a96061da39924c34f3700b80292ba82)
+        ;
+
+        
+    
+    
+            marker_1a872cb652e3ae4a34b72107e80d8e4b.bindTooltip(
+                `<div>
+                     2. Bursa — Bursa Teslim Noktası
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_1a872cb652e3ae4a34b72107e80d8e4b.setIcon(icon_24f0d2372fa919051fcf42133df6284a);
+            
+    
+            var marker_5b70c368f944c2a9f6877fe77d8af537 = L.marker(
+                [40.2225, 28.864],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_f07be164acd7005fcb5418fd8dd9bc95 = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: #00B4D8; color: white; font-weight: 800;\n                    width: 26px; height: 26px; border-radius: 50%;\n                    display: flex; align-items: center; justify-content: center;\n                    font-size: 12px; border: 2px solid white;\n                    box-shadow: 0 3px 10px rgba(0,0,0,0.4);\n                    transform: translate(-13px, -35px);\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                \"\u003e2\u003c/div\u003e\n                ",
+  "iconSize": [26, 26],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_5b70c368f944c2a9f6877fe77d8af537.setIcon(div_icon_f07be164acd7005fcb5418fd8dd9bc95);
+            
+    
+            var marker_b058b7c1b71b1dfb49739b2c8153f0af = L.marker(
+                [36.8841, 30.6927],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var icon_aae992cd5e12c1cb7e4fd7eb23bebaad = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cube",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_2d16bd9367ba55b2404e9adc5a6bbdf6 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_03b270a8ee240192f57693949b7f94ab = $(`<div id="html_03b270a8ee240192f57693949b7f94ab" style="width: 100.0%; height: 100.0%;">         <div style="font-family: 'Segoe UI', system-ui; min-width: 220px; padding: 5px;">             <div style="font-weight: 700; font-size: 15px; color: #1a1a2e;">                 📦 Antalya Mağaza             </div>             <hr style="margin: 6px 0; border-color: #e0e0e0;">             <div style="font-size: 12px; color: #555; line-height: 1.6;">                 🏙️ <b>Şehir:</b> Antalya<br>                 🏠 <b>Adres:</b> Konyaaltı, Liman Cad. No:45<br>                 📍 <b>Koordinat:</b> 36.8841°N, 30.6927°E<br>                 🔢 <b>Rota sırası:</b> <span style="color:#e74c3c; font-weight:700;">5</span><br>                 🏷️ <b>Tip:</b> Dağıtım Noktası             </div>         </div>         </div>`)[0];
+                popup_2d16bd9367ba55b2404e9adc5a6bbdf6.setContent(html_03b270a8ee240192f57693949b7f94ab);
+            
+        
+
+        marker_b058b7c1b71b1dfb49739b2c8153f0af.bindPopup(popup_2d16bd9367ba55b2404e9adc5a6bbdf6)
+        ;
+
+        
+    
+    
+            marker_b058b7c1b71b1dfb49739b2c8153f0af.bindTooltip(
+                `<div>
+                     5. Antalya — Antalya Mağaza
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b058b7c1b71b1dfb49739b2c8153f0af.setIcon(icon_aae992cd5e12c1cb7e4fd7eb23bebaad);
+            
+    
+            var marker_7ac43f896eaff6dea207329d10fd74a6 = L.marker(
+                [36.8841, 30.6927],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_ca0807816e4411721abff43dc2f342ca = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: #00B4D8; color: white; font-weight: 800;\n                    width: 26px; height: 26px; border-radius: 50%;\n                    display: flex; align-items: center; justify-content: center;\n                    font-size: 12px; border: 2px solid white;\n                    box-shadow: 0 3px 10px rgba(0,0,0,0.4);\n                    transform: translate(-13px, -35px);\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                \"\u003e5\u003c/div\u003e\n                ",
+  "iconSize": [26, 26],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_7ac43f896eaff6dea207329d10fd74a6.setIcon(div_icon_ca0807816e4411721abff43dc2f342ca);
+            
+    
+            var marker_a4432dc69b2e019ca395c33ed04cb027 = L.marker(
+                [37.8746, 32.4932],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var icon_ba83476182f064b12a7ff4ee2224ca02 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cube",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_073b85f94817d5e7335f85ded889fbfe = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_5b285b3c05cde550d29db30107c82c34 = $(`<div id="html_5b285b3c05cde550d29db30107c82c34" style="width: 100.0%; height: 100.0%;">         <div style="font-family: 'Segoe UI', system-ui; min-width: 220px; padding: 5px;">             <div style="font-weight: 700; font-size: 15px; color: #1a1a2e;">                 📦 Konya Deposu             </div>             <hr style="margin: 6px 0; border-color: #e0e0e0;">             <div style="font-size: 12px; color: #555; line-height: 1.6;">                 🏙️ <b>Şehir:</b> Konya<br>                 🏠 <b>Adres:</b> Selçuklu, Büsan Organize Sanayi No:78<br>                 📍 <b>Koordinat:</b> 37.8746°N, 32.4932°E<br>                 🔢 <b>Rota sırası:</b> <span style="color:#e74c3c; font-weight:700;">6</span><br>                 🏷️ <b>Tip:</b> Dağıtım Noktası             </div>         </div>         </div>`)[0];
+                popup_073b85f94817d5e7335f85ded889fbfe.setContent(html_5b285b3c05cde550d29db30107c82c34);
+            
+        
+
+        marker_a4432dc69b2e019ca395c33ed04cb027.bindPopup(popup_073b85f94817d5e7335f85ded889fbfe)
+        ;
+
+        
+    
+    
+            marker_a4432dc69b2e019ca395c33ed04cb027.bindTooltip(
+                `<div>
+                     6. Konya — Konya Deposu
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_a4432dc69b2e019ca395c33ed04cb027.setIcon(icon_ba83476182f064b12a7ff4ee2224ca02);
+            
+    
+            var marker_232cd985b566f55e0f9ab0288eea18f3 = L.marker(
+                [37.8746, 32.4932],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_cf6d4ab1008cb4bced4698b0b18cb5cc = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: #00B4D8; color: white; font-weight: 800;\n                    width: 26px; height: 26px; border-radius: 50%;\n                    display: flex; align-items: center; justify-content: center;\n                    font-size: 12px; border: 2px solid white;\n                    box-shadow: 0 3px 10px rgba(0,0,0,0.4);\n                    transform: translate(-13px, -35px);\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                \"\u003e6\u003c/div\u003e\n                ",
+  "iconSize": [26, 26],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_232cd985b566f55e0f9ab0288eea18f3.setIcon(div_icon_cf6d4ab1008cb4bced4698b0b18cb5cc);
+            
+    
+            var marker_1929186d95b11f9d1c41abe9c7aeb2dd = L.marker(
+                [37.7765, 29.0864],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var icon_3c6e9d2ba79b8954bf862054abaf3f71 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cube",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_d7710cacef9e161fe749c1d29a63b09b = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_bf3bb936e0b2ebe44d0b2cc4fac7af1e = $(`<div id="html_bf3bb936e0b2ebe44d0b2cc4fac7af1e" style="width: 100.0%; height: 100.0%;">         <div style="font-family: 'Segoe UI', system-ui; min-width: 220px; padding: 5px;">             <div style="font-weight: 700; font-size: 15px; color: #1a1a2e;">                 📦 Denizli Müşterisi             </div>             <hr style="margin: 6px 0; border-color: #e0e0e0;">             <div style="font-size: 12px; color: #555; line-height: 1.6;">                 🏙️ <b>Şehir:</b> Denizli<br>                 🏠 <b>Adres:</b> Merkezefendi, Organize Sanayi Bölgesi No:14<br>                 📍 <b>Koordinat:</b> 37.7765°N, 29.0864°E<br>                 🔢 <b>Rota sırası:</b> <span style="color:#e74c3c; font-weight:700;">4</span><br>                 🏷️ <b>Tip:</b> Dağıtım Noktası             </div>         </div>         </div>`)[0];
+                popup_d7710cacef9e161fe749c1d29a63b09b.setContent(html_bf3bb936e0b2ebe44d0b2cc4fac7af1e);
+            
+        
+
+        marker_1929186d95b11f9d1c41abe9c7aeb2dd.bindPopup(popup_d7710cacef9e161fe749c1d29a63b09b)
+        ;
+
+        
+    
+    
+            marker_1929186d95b11f9d1c41abe9c7aeb2dd.bindTooltip(
+                `<div>
+                     4. Denizli — Denizli Müşterisi
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_1929186d95b11f9d1c41abe9c7aeb2dd.setIcon(icon_3c6e9d2ba79b8954bf862054abaf3f71);
+            
+    
+            var marker_56e19c03eb294a812ecb6011a14d3e53 = L.marker(
+                [37.7765, 29.0864],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_04b364d2c4951183a9f82dec31550bad = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: #00B4D8; color: white; font-weight: 800;\n                    width: 26px; height: 26px; border-radius: 50%;\n                    display: flex; align-items: center; justify-content: center;\n                    font-size: 12px; border: 2px solid white;\n                    box-shadow: 0 3px 10px rgba(0,0,0,0.4);\n                    transform: translate(-13px, -35px);\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                \"\u003e4\u003c/div\u003e\n                ",
+  "iconSize": [26, 26],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_56e19c03eb294a812ecb6011a14d3e53.setIcon(div_icon_04b364d2c4951183a9f82dec31550bad);
+            
+    
+            var marker_e89a9cebd12be85372c59926d6aaef84 = L.marker(
+                [39.7668, 30.5256],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var icon_c826107a4432edbb022a6b6aa59852f9 = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cube",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_7a6d88033b8e19c33c00409feb09a510 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_93cbf764cbe2af59b908f649bdedbf38 = $(`<div id="html_93cbf764cbe2af59b908f649bdedbf38" style="width: 100.0%; height: 100.0%;">         <div style="font-family: 'Segoe UI', system-ui; min-width: 220px; padding: 5px;">             <div style="font-weight: 700; font-size: 15px; color: #1a1a2e;">                 📦 Eskişehir Teslimat             </div>             <hr style="margin: 6px 0; border-color: #e0e0e0;">             <div style="font-size: 12px; color: #555; line-height: 1.6;">                 🏙️ <b>Şehir:</b> Eskişehir<br>                 🏠 <b>Adres:</b> Tepebaşı, Organize Sanayi Bölgesi 11. Cad.<br>                 📍 <b>Koordinat:</b> 39.7668°N, 30.5256°E<br>                 🔢 <b>Rota sırası:</b> <span style="color:#e74c3c; font-weight:700;">10</span><br>                 🏷️ <b>Tip:</b> Dağıtım Noktası             </div>         </div>         </div>`)[0];
+                popup_7a6d88033b8e19c33c00409feb09a510.setContent(html_93cbf764cbe2af59b908f649bdedbf38);
+            
+        
+
+        marker_e89a9cebd12be85372c59926d6aaef84.bindPopup(popup_7a6d88033b8e19c33c00409feb09a510)
+        ;
+
+        
+    
+    
+            marker_e89a9cebd12be85372c59926d6aaef84.bindTooltip(
+                `<div>
+                     10. Eskişehir — Eskişehir Teslimat
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_e89a9cebd12be85372c59926d6aaef84.setIcon(icon_c826107a4432edbb022a6b6aa59852f9);
+            
+    
+            var marker_757e266dd6c68298c6530ec51bbf83d9 = L.marker(
+                [39.7668, 30.5256],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_8b72993cffa05a576ec92e2e37b03f3a = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: #00B4D8; color: white; font-weight: 800;\n                    width: 26px; height: 26px; border-radius: 50%;\n                    display: flex; align-items: center; justify-content: center;\n                    font-size: 12px; border: 2px solid white;\n                    box-shadow: 0 3px 10px rgba(0,0,0,0.4);\n                    transform: translate(-13px, -35px);\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                \"\u003e10\u003c/div\u003e\n                ",
+  "iconSize": [26, 26],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_757e266dd6c68298c6530ec51bbf83d9.setIcon(div_icon_8b72993cffa05a576ec92e2e37b03f3a);
+            
+    
+            var marker_b9178848ec942d29ae3e87af5d02dc74 = L.marker(
+                [38.7205, 35.4826],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var icon_10db8c6fd987d0d5c45ac806e8ee7a5c = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cube",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_4bf7040e44d411310f3a41c3c5d5a464 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_40e8b12a9ea135c274e5b41479095638 = $(`<div id="html_40e8b12a9ea135c274e5b41479095638" style="width: 100.0%; height: 100.0%;">         <div style="font-family: 'Segoe UI', system-ui; min-width: 220px; padding: 5px;">             <div style="font-weight: 700; font-size: 15px; color: #1a1a2e;">                 📦 Kayseri Dağıtım             </div>             <hr style="margin: 6px 0; border-color: #e0e0e0;">             <div style="font-size: 12px; color: #555; line-height: 1.6;">                 🏙️ <b>Şehir:</b> Kayseri<br>                 🏠 <b>Adres:</b> Melikgazi, Kayseri OSB 3. Cadde No:22<br>                 📍 <b>Koordinat:</b> 38.7205°N, 35.4826°E<br>                 🔢 <b>Rota sırası:</b> <span style="color:#e74c3c; font-weight:700;">7</span><br>                 🏷️ <b>Tip:</b> Dağıtım Noktası             </div>         </div>         </div>`)[0];
+                popup_4bf7040e44d411310f3a41c3c5d5a464.setContent(html_40e8b12a9ea135c274e5b41479095638);
+            
+        
+
+        marker_b9178848ec942d29ae3e87af5d02dc74.bindPopup(popup_4bf7040e44d411310f3a41c3c5d5a464)
+        ;
+
+        
+    
+    
+            marker_b9178848ec942d29ae3e87af5d02dc74.bindTooltip(
+                `<div>
+                     7. Kayseri — Kayseri Dağıtım
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b9178848ec942d29ae3e87af5d02dc74.setIcon(icon_10db8c6fd987d0d5c45ac806e8ee7a5c);
+            
+    
+            var marker_c1f96c351c922bc594fc35cc7aa83675 = L.marker(
+                [38.7205, 35.4826],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_b98cf4e6b85fde690935fbda62774fba = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: #00B4D8; color: white; font-weight: 800;\n                    width: 26px; height: 26px; border-radius: 50%;\n                    display: flex; align-items: center; justify-content: center;\n                    font-size: 12px; border: 2px solid white;\n                    box-shadow: 0 3px 10px rgba(0,0,0,0.4);\n                    transform: translate(-13px, -35px);\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                \"\u003e7\u003c/div\u003e\n                ",
+  "iconSize": [26, 26],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_c1f96c351c922bc594fc35cc7aa83675.setIcon(div_icon_b98cf4e6b85fde690935fbda62774fba);
+            
+    
+            var marker_b96a68bd289a0a280c516794159c5743 = L.marker(
+                [38.7507, 30.5387],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var icon_aba6337b397c1c53608bb0f176559f0b = L.AwesomeMarkers.icon(
+                {
+  "markerColor": "blue",
+  "iconColor": "white",
+  "icon": "cube",
+  "prefix": "fa",
+  "extraClasses": "fa-rotate-0",
+}
+            );
+        
+    
+        var popup_00ff672ae78c677c3137818c872a1c42 = L.popup({
+  "maxWidth": 280,
+});
+
+        
+            
+                var html_29a0f870113853107df41ad978818c7c = $(`<div id="html_29a0f870113853107df41ad978818c7c" style="width: 100.0%; height: 100.0%;">         <div style="font-family: 'Segoe UI', system-ui; min-width: 220px; padding: 5px;">             <div style="font-weight: 700; font-size: 15px; color: #1a1a2e;">                 📦 Afyon Aktarma Noktası             </div>             <hr style="margin: 6px 0; border-color: #e0e0e0;">             <div style="font-size: 12px; color: #555; line-height: 1.6;">                 🏙️ <b>Şehir:</b> Afyonkarahisar<br>                 🏠 <b>Adres:</b> Merkez, Afyon-Kütahya Karayolu 5. km<br>                 📍 <b>Koordinat:</b> 38.7507°N, 30.5387°E<br>                 🔢 <b>Rota sırası:</b> <span style="color:#e74c3c; font-weight:700;">9</span><br>                 🏷️ <b>Tip:</b> Dağıtım Noktası             </div>         </div>         </div>`)[0];
+                popup_00ff672ae78c677c3137818c872a1c42.setContent(html_29a0f870113853107df41ad978818c7c);
+            
+        
+
+        marker_b96a68bd289a0a280c516794159c5743.bindPopup(popup_00ff672ae78c677c3137818c872a1c42)
+        ;
+
+        
+    
+    
+            marker_b96a68bd289a0a280c516794159c5743.bindTooltip(
+                `<div>
+                     9. Afyonkarahisar — Afyon Aktarma Noktası
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+                marker_b96a68bd289a0a280c516794159c5743.setIcon(icon_aba6337b397c1c53608bb0f176559f0b);
+            
+    
+            var marker_a8f6c30ea18dcb407df9dd928fd17590 = L.marker(
+                [38.7507, 30.5387],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_d68c69d8f2df7d2e33ae8c2d8376de5e = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: #00B4D8; color: white; font-weight: 800;\n                    width: 26px; height: 26px; border-radius: 50%;\n                    display: flex; align-items: center; justify-content: center;\n                    font-size: 12px; border: 2px solid white;\n                    box-shadow: 0 3px 10px rgba(0,0,0,0.4);\n                    transform: translate(-13px, -35px);\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                \"\u003e9\u003c/div\u003e\n                ",
+  "iconSize": [26, 26],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_a8f6c30ea18dcb407df9dd928fd17590.setIcon(div_icon_d68c69d8f2df7d2e33ae8c2d8376de5e);
+            
+    
+            var poly_line_0d0b19b48fd55f7dfc6919d43876e54d = L.polyline(
+                [[40.819, 29.3005], [40.2225, 28.864], [38.4362, 27.1428], [37.7765, 29.0864], [36.8841, 30.6927], [37.8746, 32.4932], [38.7205, 35.4826], [39.9708, 32.6227], [38.7507, 30.5387], [39.7668, 30.5256], [40.819, 29.3005]],
+                {"bubblingMouseEvents": true, "color": "#0f0c29", "dashArray": null, "dashOffset": null, "fill": false, "fillColor": "#0f0c29", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.3, "smoothFactor": 1.0, "stroke": true, "weight": 10}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var poly_line_3900cdf7375953ee3a03b442df52e8a5 = L.polyline(
+                [[40.819, 29.3005], [40.2225, 28.864]],
+                {"bubblingMouseEvents": true, "color": "#FF6B6B", "dashArray": "12 6", "dashOffset": null, "fill": false, "fillColor": "#FF6B6B", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            poly_line_3900cdf7375953ee3a03b442df52e8a5.bindTooltip(
+                `<div>
+                     İstanbul → Bursa: 102 km
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_f524b7f3ee33a2cb3b25d8e5f65556e4 = L.marker(
+                [40.52075, 29.082250000000002],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_a3de36536a10f765541951225c33af24 = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: rgba(15,12,41,0.88); color: #FF6B6B;\n                    padding: 3px 8px; border-radius: 10px;\n                    font-size: 11px; font-weight: 700;\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                    white-space: nowrap; transform: translate(-25px, -12px);\n                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);\n                    border: 1px solid #FF6B6B40;\n                \"\u003e102 km\u003c/div\u003e\n                ",
+  "iconSize": [70, 24],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_f524b7f3ee33a2cb3b25d8e5f65556e4.setIcon(div_icon_a3de36536a10f765541951225c33af24);
+            
+    
+            var poly_line_f1a67b26c9a29f8f7bcadbfcd12e9a91 = L.polyline(
+                [[40.2225, 28.864], [38.4362, 27.1428]],
+                {"bubblingMouseEvents": true, "color": "#4ECDC4", "dashArray": "12 6", "dashOffset": null, "fill": false, "fillColor": "#4ECDC4", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            poly_line_f1a67b26c9a29f8f7bcadbfcd12e9a91.bindTooltip(
+                `<div>
+                     Bursa → İzmir: 334 km
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_d4f66bfcbefa0e1adfd6d56899b4f4a3 = L.marker(
+                [39.32935, 28.0034],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_2323f07e1a193d47066df871ca35d2a1 = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: rgba(15,12,41,0.88); color: #4ECDC4;\n                    padding: 3px 8px; border-radius: 10px;\n                    font-size: 11px; font-weight: 700;\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                    white-space: nowrap; transform: translate(-25px, -12px);\n                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);\n                    border: 1px solid #4ECDC440;\n                \"\u003e334 km\u003c/div\u003e\n                ",
+  "iconSize": [70, 24],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_d4f66bfcbefa0e1adfd6d56899b4f4a3.setIcon(div_icon_2323f07e1a193d47066df871ca35d2a1);
+            
+    
+            var poly_line_631e9bfc84878ad1a95488b8d18bda65 = L.polyline(
+                [[38.4362, 27.1428], [37.7765, 29.0864]],
+                {"bubblingMouseEvents": true, "color": "#45B7D1", "dashArray": "12 6", "dashOffset": null, "fill": false, "fillColor": "#45B7D1", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            poly_line_631e9bfc84878ad1a95488b8d18bda65.bindTooltip(
+                `<div>
+                     İzmir → Denizli: 250 km
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_33d27e4f1e339ad91ada5cb35cac24f8 = L.marker(
+                [38.10635, 28.114600000000003],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_73c69acd2cc90e9a7c98e3b81f3d7046 = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: rgba(15,12,41,0.88); color: #45B7D1;\n                    padding: 3px 8px; border-radius: 10px;\n                    font-size: 11px; font-weight: 700;\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                    white-space: nowrap; transform: translate(-25px, -12px);\n                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);\n                    border: 1px solid #45B7D140;\n                \"\u003e250 km\u003c/div\u003e\n                ",
+  "iconSize": [70, 24],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_33d27e4f1e339ad91ada5cb35cac24f8.setIcon(div_icon_73c69acd2cc90e9a7c98e3b81f3d7046);
+            
+    
+            var poly_line_c02632fae447e383ef1dd67d0cab5d72 = L.polyline(
+                [[37.7765, 29.0864], [36.8841, 30.6927]],
+                {"bubblingMouseEvents": true, "color": "#96CEB4", "dashArray": "12 6", "dashOffset": null, "fill": false, "fillColor": "#96CEB4", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            poly_line_c02632fae447e383ef1dd67d0cab5d72.bindTooltip(
+                `<div>
+                     Denizli → Antalya: 234 km
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_bda1a2de16250460bd04dff0abbdd303 = L.marker(
+                [37.330299999999994, 29.88955],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_18475e52378cb3eeab7bcda1ad586dd9 = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: rgba(15,12,41,0.88); color: #96CEB4;\n                    padding: 3px 8px; border-radius: 10px;\n                    font-size: 11px; font-weight: 700;\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                    white-space: nowrap; transform: translate(-25px, -12px);\n                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);\n                    border: 1px solid #96CEB440;\n                \"\u003e234 km\u003c/div\u003e\n                ",
+  "iconSize": [70, 24],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_bda1a2de16250460bd04dff0abbdd303.setIcon(div_icon_18475e52378cb3eeab7bcda1ad586dd9);
+            
+    
+            var poly_line_ec73c81cfdedb65b5edb11d78781c7cd = L.polyline(
+                [[36.8841, 30.6927], [37.8746, 32.4932]],
+                {"bubblingMouseEvents": true, "color": "#FFEAA7", "dashArray": "12 6", "dashOffset": null, "fill": false, "fillColor": "#FFEAA7", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            poly_line_ec73c81cfdedb65b5edb11d78781c7cd.bindTooltip(
+                `<div>
+                     Antalya → Konya: 261 km
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_b424215b147be6b8dd199bb5db00a489 = L.marker(
+                [37.37935, 31.592950000000002],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_8c400a44eeee7cca7e5574e7920cc08b = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: rgba(15,12,41,0.88); color: #FFEAA7;\n                    padding: 3px 8px; border-radius: 10px;\n                    font-size: 11px; font-weight: 700;\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                    white-space: nowrap; transform: translate(-25px, -12px);\n                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);\n                    border: 1px solid #FFEAA740;\n                \"\u003e261 km\u003c/div\u003e\n                ",
+  "iconSize": [70, 24],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_b424215b147be6b8dd199bb5db00a489.setIcon(div_icon_8c400a44eeee7cca7e5574e7920cc08b);
+            
+    
+            var poly_line_4cece06dd8a43a17c86a6d51900f6cdf = L.polyline(
+                [[37.8746, 32.4932], [38.7205, 35.4826]],
+                {"bubblingMouseEvents": true, "color": "#DDA0DD", "dashArray": "12 6", "dashOffset": null, "fill": false, "fillColor": "#DDA0DD", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            poly_line_4cece06dd8a43a17c86a6d51900f6cdf.bindTooltip(
+                `<div>
+                     Konya → Kayseri: 374 km
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_ed318fd985f525549988c197a56af48a = L.marker(
+                [38.29755, 33.987899999999996],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_305fdfba5340c30914a7de270174f8be = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: rgba(15,12,41,0.88); color: #DDA0DD;\n                    padding: 3px 8px; border-radius: 10px;\n                    font-size: 11px; font-weight: 700;\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                    white-space: nowrap; transform: translate(-25px, -12px);\n                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);\n                    border: 1px solid #DDA0DD40;\n                \"\u003e374 km\u003c/div\u003e\n                ",
+  "iconSize": [70, 24],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_ed318fd985f525549988c197a56af48a.setIcon(div_icon_305fdfba5340c30914a7de270174f8be);
+            
+    
+            var poly_line_770b8846260e715c29bf973b5878f219 = L.polyline(
+                [[38.7205, 35.4826], [39.9708, 32.6227]],
+                {"bubblingMouseEvents": true, "color": "#98D8C8", "dashArray": "12 6", "dashOffset": null, "fill": false, "fillColor": "#98D8C8", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            poly_line_770b8846260e715c29bf973b5878f219.bindTooltip(
+                `<div>
+                     Kayseri → Ankara: 381 km
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_cf95f78a7fdf2477ecbea329e85fb1c6 = L.marker(
+                [39.34565, 34.05265],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_21fe60ea9da045293767427c2ff2ba0b = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: rgba(15,12,41,0.88); color: #98D8C8;\n                    padding: 3px 8px; border-radius: 10px;\n                    font-size: 11px; font-weight: 700;\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                    white-space: nowrap; transform: translate(-25px, -12px);\n                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);\n                    border: 1px solid #98D8C840;\n                \"\u003e381 km\u003c/div\u003e\n                ",
+  "iconSize": [70, 24],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_cf95f78a7fdf2477ecbea329e85fb1c6.setIcon(div_icon_21fe60ea9da045293767427c2ff2ba0b);
+            
+    
+            var poly_line_d463019f027c82f9c4313baa739ae483 = L.polyline(
+                [[39.9708, 32.6227], [38.7507, 30.5387]],
+                {"bubblingMouseEvents": true, "color": "#F7DC6F", "dashArray": "12 6", "dashOffset": null, "fill": false, "fillColor": "#F7DC6F", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            poly_line_d463019f027c82f9c4313baa739ae483.bindTooltip(
+                `<div>
+                     Ankara → Afyonkarahisar: 303 km
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_a629d3a95015afc655395b25bbc59fad = L.marker(
+                [39.360749999999996, 31.5807],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_2d76c0fc65cd4a5f4f253a624c815e86 = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: rgba(15,12,41,0.88); color: #F7DC6F;\n                    padding: 3px 8px; border-radius: 10px;\n                    font-size: 11px; font-weight: 700;\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                    white-space: nowrap; transform: translate(-25px, -12px);\n                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);\n                    border: 1px solid #F7DC6F40;\n                \"\u003e303 km\u003c/div\u003e\n                ",
+  "iconSize": [70, 24],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_a629d3a95015afc655395b25bbc59fad.setIcon(div_icon_2d76c0fc65cd4a5f4f253a624c815e86);
+            
+    
+            var poly_line_7cfda1ce4ba5c9d4f514dcc0319a54a7 = L.polyline(
+                [[38.7507, 30.5387], [39.7668, 30.5256]],
+                {"bubblingMouseEvents": true, "color": "#BB8FCE", "dashArray": "12 6", "dashOffset": null, "fill": false, "fillColor": "#BB8FCE", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            poly_line_7cfda1ce4ba5c9d4f514dcc0319a54a7.bindTooltip(
+                `<div>
+                     Afyonkarahisar → Eskişehir: 153 km
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_b43f53c5d9ac683d8e69396f6a359d48 = L.marker(
+                [39.258750000000006, 30.53215],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_235ed190ab09f4bdb06d218a4d68e801 = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: rgba(15,12,41,0.88); color: #BB8FCE;\n                    padding: 3px 8px; border-radius: 10px;\n                    font-size: 11px; font-weight: 700;\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                    white-space: nowrap; transform: translate(-25px, -12px);\n                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);\n                    border: 1px solid #BB8FCE40;\n                \"\u003e153 km\u003c/div\u003e\n                ",
+  "iconSize": [70, 24],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_b43f53c5d9ac683d8e69396f6a359d48.setIcon(div_icon_235ed190ab09f4bdb06d218a4d68e801);
+            
+    
+            var poly_line_a71142ec04266fcc7a6b0dcfbf40d2b9 = L.polyline(
+                [[39.7668, 30.5256], [40.819, 29.3005]],
+                {"bubblingMouseEvents": true, "color": "#85C1E9", "dashArray": "12 6", "dashOffset": null, "fill": false, "fillColor": "#85C1E9", "fillOpacity": 0.2, "fillRule": "evenodd", "lineCap": "round", "lineJoin": "round", "noClip": false, "opacity": 0.85, "smoothFactor": 1.0, "stroke": true, "weight": 4}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            poly_line_a71142ec04266fcc7a6b0dcfbf40d2b9.bindTooltip(
+                `<div>
+                     Eskişehir → İstanbul: 211 km
+                 </div>`,
+                {
+  "sticky": true,
+}
+            );
+        
+    
+            var marker_73435568e61db629bc977fcc37bdecaa = L.marker(
+                [40.2929, 29.91305],
+                {
+}
+            ).addTo(map_0d775dd755e9bec93b7f2903098e315d);
+        
+    
+            var div_icon_9b206cfa2fdee40cde11f01a008fa351 = L.divIcon({
+  "html": "\n                \u003cdiv style=\"\n                    background: rgba(15,12,41,0.88); color: #85C1E9;\n                    padding: 3px 8px; border-radius: 10px;\n                    font-size: 11px; font-weight: 700;\n                    font-family: \u0027Segoe UI\u0027, system-ui, sans-serif;\n                    white-space: nowrap; transform: translate(-25px, -12px);\n                    box-shadow: 0 2px 8px rgba(0,0,0,0.4);\n                    border: 1px solid #85C1E940;\n                \"\u003e211 km\u003c/div\u003e\n                ",
+  "iconSize": [70, 24],
+  "iconAnchor": [0, 0],
+  "className": "empty",
+});
+        
+    
+                marker_73435568e61db629bc977fcc37bdecaa.setIcon(div_icon_9b206cfa2fdee40cde11f01a008fa351);
+            
+</script>
+</html>

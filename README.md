@@ -149,7 +149,7 @@ python tsp_kurye.py
 
 Çalıştırınca:
 - Terminale rota ve metrikler yazdırılır
-- Aynı klasöre `kurye_rota_haritasi.html` dosyası üretilir
+- Aynı klasöre `rota.html` dosyası üretilir
 
 ---
 
